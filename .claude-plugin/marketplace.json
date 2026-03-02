@@ -1,0 +1,27 @@
+{
+  "name": "petems",
+  "owner": {
+    "name": "Peter Souter",
+    "email": "1064715+petems@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "content",
+      "source": "./plugins/content",
+      "description": "Tools for bootstrapping content creation such as blog posts and conference talks",
+      "version": "0.4.0",
+      "author": {
+        "name": "Peter Souter",
+        "email": "1064715+petems@users.noreply.github.com"
+      },
+      "keywords": [
+        "content",
+        "blog",
+        "blogging",
+        "talks",
+        "developer-talks",
+        "meetups"
+      ]
+    }
+  ]
+}
