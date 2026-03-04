@@ -6,6 +6,8 @@
     "name": "Peter Souter",
     "email": "1064715+petems@users.noreply.github.com"
   },
+  "repository": "https://github.com/petems/petems-claude-marketplace",
+  "license": "MIT",
   "keywords": [
     "content",
     "blog",

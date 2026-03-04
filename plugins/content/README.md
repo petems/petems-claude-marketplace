@@ -2,6 +2,8 @@
 
 Tools for bootstrapping content creation including blog posts and conference talks.
 
+> Heavily inspired by [nicknisi/claude-plugins content plugin](https://github.com/nicknisi/claude-plugins/blob/main/plugins/content/README.md).
+
 ## Skills
 
 ### blog-post-writer
