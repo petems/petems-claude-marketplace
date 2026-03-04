@@ -2,7 +2,7 @@
 
 Personal collection of Claude Code plugins. For plugin and marketplace documentation, see:
 
-- [Plugin Marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
+- [Plugin Reference](https://code.claude.com/docs/en/plugins-reference)
 - [Creating Plugins](https://code.claude.com/docs/en/plugins#plugins)
 
 ## Installing Plugins
@@ -71,14 +71,20 @@ pnpm run build:all
 ```
 plugins/{name}/
 ├── .claude-plugin/
-│   └── plugin.json          # Required metadata
+│   └── plugin.json          # Required manifest (only this goes in .claude-plugin/)
 ├── .mcp.json                # Optional: MCP server config
-├── agents/*.md              # Optional: agent definitions
-├── skills/*/SKILL.md        # Optional: skills
-├── commands/*.md            # Optional: slash commands
+├── commands/                # Optional: slash commands
+├── agents/                  # Optional: agent definitions
+├── skills/                  # Optional: skills
+├── hooks/                   # Optional: event handlers
+├── output-styles/           # Optional: custom output styles
 └── mcp-server/              # Optional: custom MCP server
     └── dist/                # Bundled output
 ```
+
+Use kebab-case for all directory and file names. All component directories must be at the plugin root, not nested inside `.claude-plugin/`.
+
+Validate a plugin manifest with: `claude plugin validate`
 
 ## Adding a Plugin
 
@@ -99,11 +105,27 @@ plugins/{name}/
        "name": "Peter Souter",
        "email": "1064715+petems@users.noreply.github.com"
      },
+     "repository": "https://github.com/petems/petems-claude-marketplace",
+     "license": "MIT",
      "keywords": ["optional", "search", "terms"]
    }
    ```
 
-3. **Add components** (agents, skills, commands, or MCP servers)
+   Optional path overrides (defaults to standard directory names):
+
+   ```json
+   {
+     "commands": ["./custom/commands/special.md"],
+     "agents": "./custom/agents/",
+     "skills": "./custom/skills/",
+     "hooks": "./config/hooks.json",
+     "mcpServers": "./mcp-config.json",
+     "outputStyles": "./styles/",
+     "lspServers": "./.lsp.json"
+   }
+   ```
+
+3. **Add components** (commands, agents, skills, hooks, MCP servers, output styles, or LSP servers)
 
 4. **Sync marketplace:**
    ```bash
