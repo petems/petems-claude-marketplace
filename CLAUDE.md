@@ -2,10 +2,69 @@
 
 Personal collection of Claude Code plugins. For plugin and marketplace documentation, see:
 
-- [Plugin Marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
+- [Plugin Reference](https://code.claude.com/docs/en/plugins-reference)
 - [Creating Plugins](https://code.claude.com/docs/en/plugins#plugins)
 
-## Quick Start
+## Concepts
+
+- **CLAUDE.md** — Always-loaded project context. Instructions here are included at the start of every conversation. Best for conventions, stack info, and patterns. Can be per-project (`./CLAUDE.md`) or global (`~/.claude/CLAUDE.md`).
+- **Skills** — Structured instruction sets that Claude auto-invokes when relevant, or the user triggers manually (e.g., `/my-skill`). They only load when needed, making them more token-efficient than putting everything in CLAUDE.md.
+- **Slash Commands** — User-invoked shortcuts (e.g., `/review`, `/commit`). Similar to skills but designed primarily for the user to trigger at their own pace. Claude can also invoke them. Skills and commands may be merged in the future.
+- **Plugins** — A packaging format that bundles skills, slash commands, agents, hooks, and MCP servers together. A plugin doesn't have to use all component types — it can be as simple as a single skill.
+- **Marketplace** — A git repository containing one or more plugins. Users add a marketplace, then install individual plugins from it.
+
+## Installing Plugins
+
+### From this marketplace
+
+Add this repo as a marketplace, then install individual plugins:
+
+```bash
+# Add the marketplace (Git URL)
+/plugin marketplace add https://github.com/petems/petems-claude-marketplace.git
+
+# List available plugins
+/plugin marketplace list
+
+# Install a specific plugin
+/plugin install git-commit-push@petems-claude-marketplace
+
+# Install for the whole project (adds to .claude/settings.json)
+/plugin install git-commit-push@petems-claude-marketplace --scope project
+```
+
+You can also pin to a branch or tag:
+
+```bash
+/plugin marketplace add https://github.com/petems/petems-claude-marketplace.git#main
+```
+
+### From a local clone
+
+If you've cloned the repo locally, you can add it as a local marketplace or load a single plugin directly:
+
+```bash
+# Add local directory as marketplace
+/plugin marketplace add ./path/to/petems-claude-marketplace
+
+# Or load a single plugin for one session
+claude --plugin-dir ./path/to/petems-claude-marketplace/plugins/git-commit-push
+```
+
+### Managing marketplaces
+
+```bash
+# List configured marketplaces
+/plugin marketplace list
+
+# Update plugin listings
+/plugin marketplace update petems-claude-marketplace
+
+# Remove marketplace (also uninstalls its plugins)
+/plugin marketplace remove petems-claude-marketplace
+```
+
+## Development Quick Start
 
 ```bash
 # Install dependencies
@@ -20,14 +79,20 @@ pnpm run build:all
 ```
 plugins/{name}/
 ├── .claude-plugin/
-│   └── plugin.json          # Required metadata
+│   └── plugin.json          # Required manifest (only this goes in .claude-plugin/)
 ├── .mcp.json                # Optional: MCP server config
-├── agents/*.md              # Optional: agent definitions
-├── skills/*/SKILL.md        # Optional: skills
-├── commands/*.md            # Optional: slash commands
+├── commands/                # Optional: slash commands
+├── agents/                  # Optional: agent definitions
+├── skills/                  # Optional: skills
+├── hooks/                   # Optional: event handlers
+├── output-styles/           # Optional: custom output styles
 └── mcp-server/              # Optional: custom MCP server
     └── dist/                # Bundled output
 ```
+
+Use kebab-case for all directory and file names. All component directories must be at the plugin root, not nested inside `.claude-plugin/`.
+
+Validate a plugin manifest with: `claude plugin validate`
 
 ## Adding a Plugin
 
@@ -48,11 +113,27 @@ plugins/{name}/
        "name": "Peter Souter",
        "email": "1064715+petems@users.noreply.github.com"
      },
+     "repository": "https://github.com/petems/petems-claude-marketplace",
+     "license": "MIT",
      "keywords": ["optional", "search", "terms"]
    }
    ```
 
-3. **Add components** (agents, skills, commands, or MCP servers)
+   Optional path overrides (defaults to standard directory names):
+
+   ```json
+   {
+     "commands": ["./custom/commands/special.md"],
+     "agents": "./custom/agents/",
+     "skills": "./custom/skills/",
+     "hooks": "./config/hooks.json",
+     "mcpServers": "./mcp-config.json",
+     "outputStyles": "./styles/",
+     "lspServers": "./.lsp.json"
+   }
+   ```
+
+3. **Add components** (commands, agents, skills, hooks, MCP servers, output styles, or LSP servers)
 
 4. **Sync marketplace:**
    ```bash

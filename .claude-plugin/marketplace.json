@@ -22,6 +22,22 @@
         "developer-talks",
         "meetups"
       ]
+    },
+    {
+      "name": "git-commit-push",
+      "source": "./plugins/git-commit-push",
+      "description": "Git add, commit with Conventional Commits messages, and push in one step",
+      "version": "0.1.0",
+      "author": {
+        "name": "Peter Souter",
+        "email": "1064715+petems@users.noreply.github.com"
+      },
+      "keywords": [
+        "git",
+        "commit",
+        "push",
+        "conventional-commits"
+      ]
     }
   ]
 }
