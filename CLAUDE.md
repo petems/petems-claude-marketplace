@@ -5,6 +5,14 @@ Personal collection of Claude Code plugins. For plugin and marketplace documenta
 - [Plugin Reference](https://code.claude.com/docs/en/plugins-reference)
 - [Creating Plugins](https://code.claude.com/docs/en/plugins#plugins)
 
+## Concepts
+
+- **CLAUDE.md** — Always-loaded project context. Instructions here are included at the start of every conversation. Best for conventions, stack info, and patterns. Can be per-project (`./CLAUDE.md`) or global (`~/.claude/CLAUDE.md`).
+- **Skills** — Structured instruction sets that Claude auto-invokes when relevant, or the user triggers manually (e.g., `/my-skill`). They only load when needed, making them more token-efficient than putting everything in CLAUDE.md.
+- **Slash Commands** — User-invoked shortcuts (e.g., `/review`, `/commit`). Similar to skills but designed primarily for the user to trigger at their own pace. Claude can also invoke them. Skills and commands may be merged in the future.
+- **Plugins** — A packaging format that bundles skills, slash commands, agents, hooks, and MCP servers together. A plugin doesn't have to use all component types — it can be as simple as a single skill.
+- **Marketplace** — A git repository containing one or more plugins. Users add a marketplace, then install individual plugins from it.
+
 ## Installing Plugins
 
 ### From this marketplace
