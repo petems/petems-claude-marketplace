@@ -75,7 +75,7 @@ The blog-post-writer skill supports six narrative frameworks, auto-selected base
 ## Installation
 
 ```bash
-/plugin marketplace add petems/claude-plugins
+/plugin marketplace add petems/petems-claude-marketplace
 /plugin install content@petems
 ```
 

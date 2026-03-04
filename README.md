@@ -7,7 +7,7 @@
 Add this marketplace to Claude Code:
 
 ```bash
-/plugin marketplace add petems/claude-plugins
+/plugin marketplace add petems/petems-claude-marketplace
 ```
 
 Then install plugins:
