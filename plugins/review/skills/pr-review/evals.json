@@ -1,0 +1,125 @@
+[
+  {
+    "name": "Check all PR feedback channels",
+    "prompt": "I have an open PR with review comments. How do I check all the feedback channels?",
+    "expectations": [
+      "Mentions checking all three channels: conversation comments, inline comments, and reviews",
+      "References the check-pr-feedback.sh script",
+      "Explains that different reviewers may post in different channels"
+    ]
+  },
+  {
+    "name": "Reply to inline comment",
+    "prompt": "A reviewer left an inline comment on my PR. How do I reply to it?",
+    "expectations": [
+      "References the reply-to-inline.sh script with COMMENT_ID and MESSAGE arguments",
+      "Mentions signing the reply with agent identity",
+      "Suggests also including the fix in a Fix Report conversation comment"
+    ]
+  },
+  {
+    "name": "Create a Fix Report",
+    "prompt": "I've addressed the review feedback on my PR. How do I report what I fixed?",
+    "expectations": [
+      "Shows Fix Report format with statuses: FIXED, WONTFIX, DEFERRED, QUESTION",
+      "FIXED includes commit hash and verification",
+      "Mentions posting as ONE conversation comment and tagging all reviewers",
+      "Uses post-fix-report.sh script to post the comment rather than raw gh pr comment"
+    ]
+  },
+  {
+    "name": "Handle duplicate feedback from multiple reviewers",
+    "prompt": "Both CodeRabbit and a human reviewer flagged the same issue in my PR. How should I handle this?",
+    "expectations": [
+      "Fix once, report once",
+      "Note all sources in the Fix Report",
+      "Tag all reviewers who provided feedback"
+    ]
+  },
+  {
+    "name": "Agent-reviewer posting format",
+    "prompt": "I'm an agent reviewing a PR. Where and how should I post my review?",
+    "expectations": [
+      "Post ONE top-level conversation comment, not inline comments",
+      "Group findings by severity (Blocking vs Optional)",
+      "Include file:line and symbol anchor with verification commands for blocking items"
+    ]
+  },
+  {
+    "name": "Invoke review agents when no feedback",
+    "prompt": "I just opened a PR but there are no review comments yet. What should I do?",
+    "expectations": [
+      "Runs check-pr-feedback.sh first to confirm all three channels are empty",
+      "Invokes review agents using invoke-review-agents.sh (all agents, no --agents filter)",
+      "Informs the user that trigger comments were posted and suggests re-checking after agents respond",
+      "Notes that if PR was just created with --invoke, triggers are already in the PR body and separate invocation is not needed"
+    ]
+  },
+  {
+    "name": "Invoke specific review agents",
+    "prompt": "Can you ask Gemini and Codex to review my PR?",
+    "expectations": [
+      "Uses invoke-review-agents.sh with --agents gemini,codex",
+      "Does not invoke CodeRabbit or other agents not mentioned",
+      "Informs the user which agents were triggered"
+    ]
+  },
+  {
+    "name": "Loop mode review cycle",
+    "prompt": "Start a review loop on my PR — keep fixing and re-invoking until no more feedback.",
+    "expectations": [
+      "Recognizes loop mode from keyword 'loop'",
+      "Uses open-branch.sh to ensure not on main/master before starting",
+      "Uses create-pr.sh --invoke to embed triggers in PR body when creating new PR",
+      "Distinguishes CREATED: vs EXISTS: output to decide whether separate invoke needed",
+      "Round 1 uses invoke-review-agents.sh only if PR already existed; rounds 2+ rely on @-mentions in Fix Report footer",
+      "Uses wait-for-reviews.sh --since to poll for new feedback",
+      "Uses check-pr-feedback.sh (full check) in each round, NOT check-new-feedback.sh",
+      "Compares all feedback against previous Fix Reports to identify new/unaddressed items",
+      "Uses get-context.sh to obtain timestamps (no raw date command)",
+      "Uses commit-and-push.sh to commit and push fixes",
+      "Uses post-fix-report.sh with file-path argument",
+      "Fix Report footer has @-mentions for re-review (before max round)",
+      "Respects max rounds (default 5); final round footer says max reached",
+      "States termination conditions: nothing new to process, wait timeout, approve, user stops, or max rounds"
+    ]
+  },
+  {
+    "name": "Never run raw git/gh commands",
+    "prompt": "I need to check the current branch, see if there's a PR, and look at the review comments.",
+    "expectations": [
+      "Uses get-context.sh for state detection (branch, PR, changes) — not raw git or gh commands",
+      "Uses check-pr-feedback.sh for reading review feedback — not raw gh api calls",
+      "Does not run git status, git branch, gh pr view, or gh api directly",
+      "Follows the Entry Point Decision Tree based on get-context.sh output"
+    ]
+  },
+  {
+    "name": "Commit changes using script not raw git",
+    "prompt": "I've fixed the review feedback. Now commit and push my changes.",
+    "expectations": [
+      "Uses commit-and-push.sh to stage, commit, and push — not raw git add/commit/push",
+      "Does not run git add, git commit, or git push directly",
+      "Provides a descriptive commit message with type prefix (e.g., fix:, feat:)"
+    ]
+  },
+  {
+    "name": "Create PR from main with uncommitted changes",
+    "prompt": "I'm on main with some uncommitted changes. Create a PR for these changes and get it reviewed.",
+    "expectations": [
+      "Starts with get-context.sh to detect state (on_default: true, has_changes: true)",
+      "Follows decision tree: open-branch.sh → commit-and-push.sh → create-pr.sh --invoke",
+      "Does not run raw git checkout -b, git add, git commit, git push, or gh pr create",
+      "Uses agent Write tool to create PR body file, then passes path to create-pr.sh --body (no bash heredoc)"
+    ]
+  },
+  {
+    "name": "Avoid piped stdin to scripts",
+    "prompt": "Commit my changes with message 'fix: address review feedback' and post a fix report.",
+    "expectations": [
+      "Uses commit-and-push.sh with -m flag, not echo piped to stdin",
+      "Writes fix report using Write tool to .agents/scratch/, then passes path to post-fix-report.sh",
+      "Does not use echo ... | script.sh pattern"
+    ]
+  }
+]
