@@ -5,7 +5,58 @@ Personal collection of Claude Code plugins. For plugin and marketplace documenta
 - [Plugin Marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Creating Plugins](https://code.claude.com/docs/en/plugins#plugins)
 
-## Quick Start
+## Installing Plugins
+
+### From this marketplace
+
+Add this repo as a marketplace, then install individual plugins:
+
+```bash
+# Add the marketplace (Git URL)
+/plugin marketplace add https://github.com/petems/petems-claude-marketplace.git
+
+# List available plugins
+/plugin marketplace list
+
+# Install a specific plugin
+/plugin install git-commit-push@petems-claude-marketplace
+
+# Install for the whole project (adds to .claude/settings.json)
+/plugin install git-commit-push@petems-claude-marketplace --scope project
+```
+
+You can also pin to a branch or tag:
+
+```bash
+/plugin marketplace add https://github.com/petems/petems-claude-marketplace.git#main
+```
+
+### From a local clone
+
+If you've cloned the repo locally, you can add it as a local marketplace or load a single plugin directly:
+
+```bash
+# Add local directory as marketplace
+/plugin marketplace add ./path/to/petems-claude-marketplace
+
+# Or load a single plugin for one session
+claude --plugin-dir ./path/to/petems-claude-marketplace/plugins/git-commit-push
+```
+
+### Managing marketplaces
+
+```bash
+# List configured marketplaces
+/plugin marketplace list
+
+# Update plugin listings
+/plugin marketplace update petems-claude-marketplace
+
+# Remove marketplace (also uninstalls its plugins)
+/plugin marketplace remove petems-claude-marketplace
+```
+
+## Development Quick Start
 
 ```bash
 # Install dependencies

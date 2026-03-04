@@ -23,14 +23,18 @@ Run `git add -A` to stage everything — tracked, untracked, and deleted files.
 
 **Exception**: If you spot files that look like secrets or sensitive data (`.env`, `credentials.json`, private keys, files with `secret` or `token` in the name), warn the user before staging and ask if they want to proceed. Don't silently commit secrets.
 
-### 3. Analyze the diff
+### 3. Analyze the diff and split into atomic commits
 
 Run `git diff --cached` to see exactly what's staged. Read the diff carefully — the commit message quality depends on understanding what actually changed, not just which files were touched.
 
 Look for:
 * What feature, fix, or change does this represent?
-* Are there multiple logical changes that would normally be separate commits? If so, mention this to the user but proceed with a single commit unless they say otherwise.
-* What's the most accurate Conventional Commits type?
+* Are there multiple logical changes? Each commit should represent one atomic unit of work — a single feature, a single fix, a single refactor. If the staged changes span multiple concerns, split them into separate commits.
+* What's the most accurate Conventional Commits type for each unit?
+
+**Splitting commits**: If the changes contain distinct units of work (e.g., a bug fix and a new feature, or a refactor and a config change), unstage everything with `git reset HEAD`, then selectively stage and commit each unit one at a time using `git add <specific files>`. The goal is a clean, readable history where each commit stands on its own and tells a coherent story. After all commits are made, push once at the end.
+
+A good rule of thumb: if you need two different Conventional Commits types (e.g., `feat` and `fix`), that's two commits.
 
 ### 4. Write the commit message
 
